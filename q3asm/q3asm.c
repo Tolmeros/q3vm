@@ -1511,6 +1511,7 @@ Assemble LCC bytecode assembly to Q3VM bytecode.\n\
   -o OUTPUT      Write assembled output to file OUTPUT.qvm\n\
   -f LISTFILE    Read options and list of files to assemble from LISTFILE.q3asm\n\
   -b BUCKETS     Set symbol hash table to BUCKETS buckets\n\
+  -s STACK_SIZE  Change stack size\n\
   -m             Generate a mapfile for each OUTPUT.qvm\n\
   -v             Verbose compilation report\n\
   -vq3           Produce a qvm file compatible with Q3 1.32b\n\
@@ -1526,6 +1527,7 @@ main
 int main( int argc, char **argv ) {
 	int			i;
 	double		start, end;
+	unsigned int uint_tmp;
 
 //	_chdir( "/quake3/jccode/cgame/lccout" );	// hack for vc profiler
 
@@ -1597,6 +1599,21 @@ Motivation: not wanting to scrollback for pages to find asm error.
 
 		if( !strcmp( argv[ i ], "-vq3" ) ) {
 			options.vanillaQ3Compatibility = qtrue;
+			continue;
+		}
+
+		if ( !strcmp( argv[i], "-s" ) ) {
+			if ( i == argc - 1 ) {
+				Error( "-s must precede a stack size" );
+			}
+/* Timbo of Tremulous pointed out -o not working; stock ID q3asm folded in the change. Yay. */
+			//strcpy( outputFilename, argv[ i+1 ] );
+			//stackSize
+			uint_tmp = atoi(argv[ i+1 ]);
+			if (uint_tmp > 0) {
+				stackSize = uint_tmp;
+				i++;
+			}
 			continue;
 		}
 
