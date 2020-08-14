@@ -66,6 +66,7 @@ void* Com_malloc(size_t size, vm_t* vm, vmMallocType_t type)
 {
     (void)vm;
     (void)type;
+    printf("Malloc size: %d\n", size);
     return malloc(size);
 }
 
