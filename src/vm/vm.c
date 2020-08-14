@@ -81,7 +81,7 @@
 #define OPCODE_TABLE_MASK (OPCODE_TABLE_SIZE - 1)
 
 /** Max. size of BSS section */
-#define VM_MAX_BSS_LENGTH 10485760
+#define VM_MAX_BSS_LENGTH 10*1024*1024
 
 /******************************************************************************
  * TYPEDEFS

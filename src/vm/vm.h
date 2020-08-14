@@ -32,10 +32,10 @@
 #define VM_MAGIC 0x12721444
 
 /** Don't change stack size: Hardcoded in q3asm and reserved at end of BSS */
-#define VM_PROGRAM_STACK_SIZE 0x10000
+#define VM_PROGRAM_STACK_SIZE 64*1024
 
 /** Max. number of bytes in .qvm */
-#define VM_MAX_IMAGE_SIZE 0x400000
+#define VM_MAX_IMAGE_SIZE 10*1024*1024
 
 /**< Maximum length of a pathname, 64 to be Q3 compatible */
 #define VM_MAX_QPATH 64
