@@ -92,6 +92,7 @@ clean:
 	$(CLEANUP) $(TARGET_BASE).dmp
 	$(CLEANUP) ./*.gcov
 	$(MAKE) -C example clean
+	$(MAKE) -C examples clean
 	$(MAKE) -C lcc clean
 	$(MAKE) -C q3asm clean
 	$(MAKE) -C test clean
@@ -127,6 +128,11 @@ analysis: clangcheck cppcheck
 example/bytecode.qvm: q3asm lcc
 	@echo "Building "$@
 	@$(MAKE) -C example
+
+# Examples
+examples: q3asm lcc
+	@echo "Building "$@
+	@$(MAKE) -C examples
 
 # Test and code coverage firmware
 test/test.qvm: q3asm lcc
