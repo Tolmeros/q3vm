@@ -709,9 +709,6 @@ static int VM_PrepareInterpreter(vm_t* vm, const vmHeader_t* header)
         return -1;
     }
 
-    Com_Memcpy(vm->codeBase, (uint8_t*)header + header->codeOffset,
-               vm->codeLength);
-
     /* we don't need to translate the instructions, but we still need
        to find each instructions starting point for jumps */
     int_pc = byte_pc = 0;
