@@ -700,8 +700,72 @@ static int VM_PrepareInterpreter(vm_t* vm, const vmHeader_t* header)
     int      instruction;
     int*     codeBase;
 
+    instruction      = 0;
+    byte_pc = 0;
+    int_pc = 0;
+    code             = (uint8_t*)header + header->codeOffset;
+
+    while (instruction < header->instructionCount)
+    {
+        op = (int)code[byte_pc];
+        instruction++;
+
+        if (byte_pc > header->codeLength)
+        {
+            Com_Error(vm->lastError = VM_PC_OUT_OF_RANGE,
+                      "VM_PrepareInterpreter: pc > header->codeLength");
+            return -1;
+        }
+
+        byte_pc++;
+        int_pc++;
+
+        /* these are the only opcodes that aren't a single byte */
+        switch (op)
+        {
+        case OP_ENTER:
+        case OP_CONST:
+        case OP_LOCAL:
+        case OP_LEAVE:
+        case OP_EQ:
+        case OP_NE:
+        case OP_LTI:
+        case OP_LEI:
+        case OP_GTI:
+        case OP_GEI:
+        case OP_LTU:
+        case OP_LEU:
+        case OP_GTU:
+        case OP_GEU:
+        case OP_EQF:
+        case OP_NEF:
+        case OP_LTF:
+        case OP_LEF:
+        case OP_GTF:
+        case OP_GEF:
+        case OP_BLOCK_COPY:
+            byte_pc += 4;
+            int_pc++;
+            break;
+        case OP_ARG:
+            byte_pc++;
+            int_pc++;
+            break;
+        default:
+            if (op < 0 || op >= OP_MAX)
+            {
+                vm->lastError = VM_BAD_INSTRUCTION;
+                Com_Error(vm->lastError, "Bad VM instruction");
+                return -1;
+            }
+            break;
+        }
+
+    }
+
     vm->codeBase = (uint8_t*)Com_malloc(
-        vm->codeLength * 4, vm, VM_ALLOC_CODE_SEC); /* we're now int aligned */
+        int_pc * 4, vm, VM_ALLOC_CODE_SEC); /* we're now int aligned */
+
     if (!vm->codeBase)
     {
         Com_Error(VM_MALLOC_FAILED,
@@ -713,7 +777,6 @@ static int VM_PrepareInterpreter(vm_t* vm, const vmHeader_t* header)
        to find each instructions starting point for jumps */
     int_pc = byte_pc = 0;
     instruction      = 0;
-    code             = (uint8_t*)header + header->codeOffset;
     codeBase         = (int*)vm->codeBase;
 
     /* Copy and expand instructions to words while
