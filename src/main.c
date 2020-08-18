@@ -42,9 +42,17 @@ int main(int argc, char** argv)
         return -1;
     }
 
+    #if 0
     if (VM_Create(&vm, filepath, image, imageSize, systemCalls) == 0)
+    #else
+    if (VM_Create_bytecode_in_ram(&vm, filepath, image, imageSize, systemCalls) == 0)
+    #endif
     {
+        #if 0
         retVal = VM_Call(&vm, 0);
+        #else
+        retVal = VM_Call_bytecode_in_ram(&vm, 0);
+        #endif
     }
     /* output profile information in DEBUG_VM build: */
     /* VM_VmProfile_f(&vm); */

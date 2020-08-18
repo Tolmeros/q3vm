@@ -88,6 +88,13 @@ typedef enum {
     VM_ALLOC_TYPE_MAX                  /**< Last item in vmMallocType_t */
 } vmMallocType_t;
 
+/** VM interpreter type */
+typedef enum {
+  ALL_IN_RAM,
+  ONLY_BYTECODE_IN_RAM,
+  ONLY_BYTECODE_FROM_DISK,
+} vmInterpreterMode_t;
+
 /** File header of a bytecode .qvm file. Can be directly mapped to the start of
  *  the file. This is always little endian encoded in the file. */
 typedef struct
@@ -146,6 +153,7 @@ typedef struct vm_s
     int       entryOfs;   /**< unused */
     int       codeLength; /**< Number of bytes in code segment */
     intptr_t* instructionPointers;
+    uint16_t* codePointers;
     int       instructionCount; /**< Number of instructions for VM */
     uint8_t*  dataBase;         /**< Start of .data memory segment */
     int       dataMask;         /**< VM mask to protect access to dataBase */
@@ -184,6 +192,10 @@ typedef struct vm_s
 int VM_Create(vm_t* vm, const char* module, const uint8_t* bytecode, int length,
               intptr_t (*systemCalls)(vm_t*, intptr_t*));
 
+int VM_Create_bytecode_in_ram(vm_t* vm, const char* name,
+              const uint8_t* bytecode, int length,
+              intptr_t (*systemCalls)(vm_t*, intptr_t*));
+
 /** Free the memory of the virtual machine.
  * @param[in] vm Pointer to initialized virtual machine. */
 void VM_Free(vm_t* vm);
@@ -195,6 +207,7 @@ void VM_Free(vm_t* vm);
  * @param[in] command Basic parameter passed to the bytecode.
  * @return Return value of the function call by the VM. */
 intptr_t VM_Call(vm_t* vm, int command, ...);
+intptr_t VM_Call_bytecode_in_ram(vm_t* vm, int command, ...);
 
 /** Helper function for syscalls VMA(x) macro:
  * Translate from virtual machine memory to real machine memory.

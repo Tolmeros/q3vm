@@ -45,7 +45,7 @@ CFLAGS += -fdata-sections -ffunction-sections -fno-strict-aliasing
 CFLAGS += -fmessage-length=0 -MMD -fno-common -MP -MF"$(@:%.o=%.d)"
 CFLAGS += -Wall -Wextra
 # CFLAGS += -O0 -ggdb -fno-omit-frame-pointer
-CFLAGS += -O2
+CFLAGS += -O2 -ggdb
 
 # disable some warnings...
 # Header files
