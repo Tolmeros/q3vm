@@ -1,3 +1,6 @@
+# tmp office files
+.~lock*ods#
+
 example/build
 q3vm.exe
 q3vm.dmp

@@ -40,6 +40,14 @@
 /**< Maximum length of a pathname, 64 to be Q3 compatible */
 #define VM_MAX_QPATH 64
 
+/** Max. number of op codes in op codes table */
+#define OPCODE_TABLE_SIZE 64
+/** Mask for a valid opcode (so no one can escape the sandbox) */
+#define OPCODE_TABLE_MASK (OPCODE_TABLE_SIZE - 1)
+
+/** Max. size of BSS section */
+#define VM_MAX_BSS_LENGTH 10*1024*1024
+
 /** Redirect printf() calls with this macro */
 #define Com_Printf printf
 
@@ -48,6 +56,10 @@
 
 /** Redirect memcpy() calls with this macro */
 #define Com_Memcpy memcpy
+
+/** Macro to read 32-bit little endian value (from the .qvm file) and convert it
+ * to the host byte order */
+#define LittleLong(x) LittleEndianToHost((const uint8_t*)&(x))
 
 /** Translate from virtual machine memory to real machine memory. */
 #define VMA(x, vm) VM_ArgPtr(args[x], vm)
@@ -252,6 +264,11 @@ void VM_VmProfile_f(const vm_t* vm);
  * Set to 1 for general informations and 2 to output every opcode name.
  * @param[in] level If level is 0: be quiet (default). */
 void VM_Debug(int level);
+
+/** Read a 32bit little endian value and convert it to host representation.
+ * @param[in] b Four bytes in little endian (32bit value)
+ * @return (swapped) output value in host machine order. */
+int LittleEndianToHost(const uint8_t b[4]);
 
 /******************************************************************************
  * CALLBACK FUNCTIONS (USER DEFINED IN HOST APPLICATION)

@@ -37,10 +37,6 @@
  * command number + 12 arguments */
 #define MAX_VMMAIN_ARGS 13
 
-/** Macro to read 32-bit little endian value (from the .qvm file) and convert it
- * to the host byte order */
-#define LittleLong(x) LittleEndianToHost((const uint8_t*)&(x))
-
 /* GCC can do "computed gotos" instead of a traditional switch/case
  * interpreter, this speeds up the execution.
  *
@@ -74,14 +70,6 @@
 #define USE_COMPUTED_GOTOS /**< use computed gotos instead of a switch */
 #endif
 #endif
-
-/** Max. number of op codes in op codes table */
-#define OPCODE_TABLE_SIZE 64
-/** Mask for a valid opcode (so no one can escape the sandbox) */
-#define OPCODE_TABLE_MASK (OPCODE_TABLE_SIZE - 1)
-
-/** Max. size of BSS section */
-#define VM_MAX_BSS_LENGTH 10*1024*1024
 
 /******************************************************************************
  * TYPEDEFS
@@ -300,11 +288,6 @@ static int VM_CallInterpreted(vm_t* vm, int* args);
  * @param[in,out] vm Current VM */
 static void VM_BlockCopy(unsigned int dest, unsigned int src, size_t n,
                          vm_t* vm);
-
-/** Read a 32bit little endian value and convert it to host representation.
- * @param[in] b Four bytes in little endian (32bit value)
- * @return (swapped) output value in host machine order. */
-static int LittleEndianToHost(const uint8_t b[4]);
 
 /** Helper function for the _vmf inline function _vmf in vm.h.
  * @param[in] x Number that is actually a IEEE 754 float.
@@ -692,7 +675,7 @@ static void VM_BlockCopy(unsigned int dest, unsigned int src, size_t n,
     Com_Memcpy(vm->dataBase + dest, vm->dataBase + src, n);
 }
 
-static int LittleEndianToHost(const uint8_t b[4])
+int LittleEndianToHost(const uint8_t b[4])
 {
     return (b[0] << 0) | (b[1] << 8) | (b[2] << 16) | (b[3] << 24);
 }
