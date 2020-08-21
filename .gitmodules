@@ -1,0 +1,4 @@
+[submodule "libs/libcrc"]
+	path = libs/libcrc
+	url = https://github.com/lammertb/libcrc.git
+	branch = tags/v2.0
